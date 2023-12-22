@@ -34,40 +34,46 @@ public class Game
      */
     private void createRooms()
     {
-        Room auditoriumLobby, centerWestHallway, centerEastHallway, fortGreenePlace,
-             toNorthWestEntrance, toSouthWestEntrance, auditorium, toNorthEastEntrance,
-             toSouthEastEntrance, southEliot, murral;
+        Room Lobby, key, control, powerUp, guard, safe, exit, empty1, empty2, empty3, empty4, empty5, empty6, empty7, empty8, empty9;
       
         // create the rooms
-        auditoriumLobby = new Room("in lobby outside the auditorium");
-        centerWestHallway = new Room("in the center west hallway");
-        centerEastHallway = new Room("in the center east hallway");
-        fortGreenePlace = new Room("outside center west on Fort Greene Place");
-        toNorthWestEntrance = new Room("looking toward the north west entrance");
-        toSouthWestEntrance = new Room("looking toard the south west entrance");
-        auditorium = new Room("Auditorium");
-        toNorthEastEntrance = new Room("looking toward the north east entrance");
-        toSouthEastEntrance = new Room("looking toward the south east entrance");
-        southEliot = new Room("outside center east on South Elliot"); 
-        murral = new Room("at the murral in the lobby");
-        auditorium = new Room("in the auditorium");
-        
+        Lobby = new Room("you enter the lobby of the escape room");
+        key = new Room("you enter a room and find a key");
+        control = new Room("you enter the control room and see the camera system");
+        powerUp = new Room("you enter a room full of rations and gain newfound strength");
+        guard = new Room("you enter a room with a bouncer blocking your path");
+        safe = new Room("you enter a room with a safe. It looks like you need a key from somewhere...");
+        exit = new Room("you enter a room with a exit door. It looks like it needs a pin to unlock...");
+        empty9 = new Room("you enter a empty room");
+        empty1 = new Room("you enter a empty room");
+        empty2 = new Room("you enter a empty room");
+        empty3 = new Room("you enter a empty room");
+        empty4 = new Room("you enter a empty room");
+        empty5 = new Room("you enter a empty room");
+        empty6 = new Room("you enter a empty room");
+        empty7 = new Room("you enter a empty room");
+        empty8 = new Room("you enter a empty room");
+
         // initialise room exits (north, east, south, west)
-        auditoriumLobby.setExits(murral, centerEastHallway, auditorium, centerWestHallway);
-        centerWestHallway.setExits(toNorthWestEntrance, auditoriumLobby, toSouthWestEntrance, fortGreenePlace);
-        centerEastHallway.setExits(toNorthEastEntrance, southEliot, toSouthEastEntrance, auditoriumLobby);
+        Lobby.setExits(empty5,safe,null,null);
+        empty5.setExits(key,empty6,Lobby,null);
+        key.setExits(empty1,powerUp,empty5,null);
+        empty1.setExits(null,empty2,key,null);
+        safe.setExits(empty5,empty8,null,Lobby);
+        empty6.setExits(powerUp,guard,safe,empty5);
+        powerUp.setExits(empty2,empty4,empty6,key);
+        empty2.setExits(null,empty3,powerUp,empty1);
+        empty3.setExits(null,control,empty4,empty2);
+        empty4.setExits(empty3,exit,guard,powerUp);
+        guard.setExits(empty4,empty7,empty8,empty6);
+        empty8.setExits(guard,empty9,null,safe);
+        empty9.setExits(empty7,null,null,empty8);
+        empty7.setExits(exit,null,empty9,guard);
+        exit.setExits(control,null,empty7,empty4);
+        control.setExits(null,null,exit,empty4);
 
-        fortGreenePlace.setExits(null, centerWestHallway, null, null);
-        toNorthWestEntrance.setExits(null, null, centerWestHallway, null);
-        toSouthWestEntrance.setExits(centerWestHallway, null, null, null);
-        auditorium.setExits(auditoriumLobby, null, null, null);
-        murral.setExits(null, null, auditoriumLobby, null);
-        southEliot.setExits(null, centerEastHallway, null, null);
-        toNorthEastEntrance.setExits(null, null, centerEastHallway, null);
-        toSouthEastEntrance.setExits(centerEastHallway, null, null, null);
-        
 
-        currentRoom = auditoriumLobby;  // start game outside
+        currentRoom = Lobby;  // start game outside
     }
 
     /**
@@ -100,18 +106,7 @@ public class Game
         System.out.println();
         System.out.println("You are " + currentRoom.getDescription());
         System.out.print("You can go: ");
-        if(currentRoom.northExit != null) {
-            System.out.print("north ");
-        }
-        if(currentRoom.eastExit != null) {
-            System.out.print("east ");
-        }
-        if(currentRoom.southExit != null) {
-            System.out.print("south ");
-        }
-        if(currentRoom.westExit != null) {
-            System.out.print("west ");
-        }
+        locationInfo();
         System.out.println();
     }
 
@@ -195,18 +190,7 @@ public class Game
             currentRoom = nextRoom;
             System.out.println("You are " + currentRoom.getDescription());
             System.out.print("Exits: ");
-            if(currentRoom.northExit != null) {
-                System.out.print("north ");
-            }
-            if(currentRoom.eastExit != null) {
-                System.out.print("east ");
-            }
-            if(currentRoom.southExit != null) {
-                System.out.print("south ");
-            }
-            if(currentRoom.westExit != null) {
-                System.out.print("west ");
-            }
+            locationInfo();
             System.out.println();
         }
     }
@@ -224,6 +208,26 @@ public class Game
         }
         else {
             return true;  // signal that we want to quit
+        }
+    }
+
+    /**
+     * helper method that returns location info.
+     *
+     * @return string of directions you can go.
+     */
+    private void locationInfo(){
+        if(currentRoom.northExit != null) {
+            System.out.print("north ");
+        }
+        if(currentRoom.eastExit != null) {
+            System.out.print("east ");
+        }
+        if(currentRoom.southExit != null) {
+            System.out.print("south ");
+        }
+        if(currentRoom.westExit != null) {
+            System.out.print("west ");
         }
     }
 }
