@@ -34,14 +34,15 @@ public class Game
      */
     private void createRooms()
     {
-        Room Lobby, key, control, powerUp, guard, safe, exit, empty1, empty2, empty3, empty4, empty5, empty6, empty7, empty8, empty9;
+        Room Lobby, key, control, powerUp, guard, safe, exit, empty1, empty2, empty3, empty4, empty5, empty6, empty7, empty8, empty9, underControl;
       
         // create the rooms
         Lobby = new Room("you enter the lobby of the escape room");
-        key = new Room("you enter a room and find a key");
+        key = new Room("you enter a room and obtain a key");
         control = new Room("you enter the control room and see the camera system");
+        underControl = new Room("you enter a secret room under the control room");
         powerUp = new Room("you enter a room full of rations and gain newfound strength");
-        guard = new Room("you enter a room with a bouncer blocking your path");
+        guard = new Room("you enter a room with a bouncer blocking your path. Maybe some rations could help.");
         safe = new Room("you enter a room with a safe. It looks like you need a key from somewhere...");
         exit = new Room("you enter a room with a exit door. It looks like it needs a pin to unlock...");
         empty9 = new Room("you enter a empty room");
@@ -71,6 +72,8 @@ public class Game
         empty7.setExits(exit,null,empty9,guard);
         exit.setExits(control,null,empty7,empty4);
         control.setExits(null,null,exit,empty4);
+        control.setExits("downstairs", underControl);
+        underControl.setExits("upstairs",control);
 
 
         currentRoom = Lobby;  // start game outside
@@ -104,7 +107,7 @@ public class Game
         System.out.println("World of Zuul is a new, incredibly boring adventure game.");
         System.out.println("Type 'help' if you need help.");
         System.out.println();
-        System.out.println("You are " + currentRoom.getDescription());
+        System.out.println(currentRoom.getDescription());
         System.out.print("You can go: ");
         locationInfo();
         System.out.println();
@@ -171,18 +174,23 @@ public class Game
         // Try to leave current room.
         Room nextRoom = null;
         if(direction.equals("north")) {
-            nextRoom = currentRoom.northExit;
+            nextRoom = currentRoom.getExit("north");
         }
         if(direction.equals("east")) {
-            nextRoom = currentRoom.eastExit;
+            nextRoom = currentRoom.getExit("east");
         }
         if(direction.equals("south")) {
-            nextRoom = currentRoom.southExit;
+            nextRoom = currentRoom.getExit("south");
         }
         if(direction.equals("west")) {
-            nextRoom = currentRoom.westExit;
+            nextRoom = currentRoom.getExit("west");
         }
-
+        if(direction.equals("downstairs")){
+            nextRoom = currentRoom.getExit("downstairs");
+        }
+        if(direction.equals("upstairs")){
+            nextRoom = currentRoom.getExit("upstairs");
+        }
         if (nextRoom == null) {
             System.out.println("There is no door!");
         }
@@ -217,17 +225,9 @@ public class Game
      * @return string of directions you can go.
      */
     private void locationInfo(){
-        if(currentRoom.northExit != null) {
-            System.out.print("north ");
-        }
-        if(currentRoom.eastExit != null) {
-            System.out.print("east ");
-        }
-        if(currentRoom.southExit != null) {
-            System.out.print("south ");
-        }
-        if(currentRoom.westExit != null) {
-            System.out.print("west ");
-        }
+        System.out.println("Your are " + currentRoom.getDescription());
+        System.out.print("You can go: ");
+        System.out.print(currentRoom.getExitString());
+        System.out.println();
     }
 }
