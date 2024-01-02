@@ -19,7 +19,7 @@ public class Game
 {
     private Parser parser;
     private Room currentRoom;
-        
+
     /**
      * Create the game and initialise its internal map.
      */
@@ -34,7 +34,7 @@ public class Game
      */
     private void createRooms()
     {
-        Room Lobby, key, control, powerUp, guard, safe, exit, empty1, empty2, empty3, empty4, empty5, empty6, empty7, empty8, empty9, underControl;
+        Room Lobby, key, control, powerUp, guard, out, safe, exit, empty1, empty2, empty3, empty4, empty5, empty6, empty7, empty8, empty9, underControl;
       
         // create the rooms
         Lobby = new Room("you enter the lobby of the escape room");
@@ -45,6 +45,7 @@ public class Game
         guard = new Room("you enter a room with a bouncer blocking your path. Maybe some rations could help.");
         safe = new Room("you enter a room with a safe. It looks like you need a key from somewhere...");
         exit = new Room("you enter a room with a exit door. It looks like it needs a pin to unlock...");
+        out = new Room("you've escaped and won!");
         empty9 = new Room("you enter a empty room");
         empty1 = new Room("you enter a empty room");
         empty2 = new Room("you enter a empty room");
@@ -74,8 +75,7 @@ public class Game
         control.setExits(null,null,exit,empty4);
         control.setExits("downstairs", underControl);
         underControl.setExits("upstairs",control);
-
-
+        exit.setExits("out",out);
         currentRoom = Lobby;  // start game outside
     }
 
@@ -88,11 +88,11 @@ public class Game
 
         // Enter the main command loop.  Here we repeatedly read commands and
         // execute them until the game is over.
-                
         boolean finished = false;
         while (! finished) {
             Command command = parser.getCommand();
             finished = processCommand(command);
+
         }
         System.out.println("Thank you for playing.  Good bye.");
     }
@@ -190,6 +190,9 @@ public class Game
         }
         if(direction.equals("upstairs")){
             nextRoom = currentRoom.getExit("upstairs");
+        }
+        if(direction.equals("out")){
+            nextRoom = currentRoom.getExit("out");
         }
         if (nextRoom == null) {
             System.out.println("There is no door!");
